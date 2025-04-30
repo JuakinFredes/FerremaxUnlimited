@@ -1,25 +1,74 @@
-#opcionesHead{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.navbar-custom {
+    background-color: #000000;
+  }
 
-#head{
-    background-color: black;
-    padding-top: 2%;
-    padding-bottom: 2%;
-}
-#fotter{
-    background-color: black;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.lista{
-    padding-left: 50px;
-    padding-right: 50px;
-}
+  /* Texto blanco en los enlaces y marca */
+  .navbar-custom .nav-link,
+  .navbar-custom .navbar-brand {
+    color: white !important;
+  }
+
+  /* Hover en enlaces y marca: ámbar */
+  .navbar-custom .nav-link:hover,
+  .navbar-custom .navbar-brand:hover {
+    color: #ffc107 !important;
+  }
+
+  /* Caja de íconos con fondo amarillo y bordes redondeados */
+  .icon-box {
+    background-color: yellow;
+    border-radius: 5px;
+    padding: 5px 10px;
+  }
+
+  /* Menú desplegable con fondo gris claro */
+  .dropdown-menu {
+    background-color: #e0e0e0;
+  }
+
+  /* Texto negro en ítems del dropdown */
+  .dropdown-menu .dropdown-item {
+    color: black;
+  }
+
+  /* Hover sobre ítems del dropdown: gris más oscuro */
+  .dropdown-menu .dropdown-item:hover {
+    background-color: #d6d6d6;
+  }
+
+  /* Mostrar dropdown al pasar el mouse (sin hacer clic) */
+  .navbar-nav .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+
+  /* Tamaño de los íconos de navegación */
+  .nav-item i {
+    font-size: 1.2rem;
+  }
+
+  /* Estilos personalizados para el pie de página */
+  .footer-custom {
+    background-color: #000000;
+    color: white;
+    position:absolute; 
+    bottom:0;
+    width: 100%;
+  }
+
+  /* Títulos en el footer con color ámbar */
+  .footer-custom h5 {
+    color: #ffc107;
+  }
+
+  /* Ítems del footer en blanco con margen inferior */
+  .footer-custom ul li {
+    color: white;
+    margin-bottom: 5px;
+  }
+
+  /* Hover sobre ítems del footer: ámbar y cursor pointer */
+  .footer-custom ul li:hover {
+    color: #ffc107;
+    cursor: pointer;
+  }

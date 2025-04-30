@@ -4,93 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferremax Unlimited</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <!--este bloque es para los css especificos de pagina-->
     {% block css %}
-
+    
     {% endblock %}
 </head>
 <body>
 
-    <!--El Header-->
-    <div class="container-fluid" id="head">
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+      
+      <!-- Marca / Nombre del sitio -->
+      <a class="navbar-brand" href="{% url 'home' %}">FerreMax Unlimited</a>
 
-      <div>
+      <!-- Contenido colapsable (menú en móviles) -->
+      <div class="collapse navbar-collapse" id="navbarNav">
         
-      </div>
+        <!-- Menú de navegación a la izquierda -->
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'productos' %}">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'servicios' %}">Servicios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contactos' %}">Contactanos</a>
+          </li>
+        </ul>
 
-        <div>
-            <!-- la funcion url llama a los urls de app/urls y los relaciona con el name que tengan-->
-            <ul class="nav" id="opcionesHead">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'productos' %}">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'servicios' %}">Servicios</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'contactos' %}">Contactanos</a>
-            </li>
+        <!-- Menú a la derecha (Carrito y Perfil) -->
+        <ul class="navbar-nav">
+          
+          <!-- Dropdown de carrito -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="buyMenu" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-shopping-cart"></i> Buy
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="buyMenu">
+              <li><a class="dropdown-item" href="#">Carrito</a></li>
+              <li><a class="dropdown-item" href="#">Pagar</a></li>
+            </ul>
+          </li>
+
+          <!-- Dropdown de perfil -->
+          <li class="nav-item dropdown ms-3">
+            <a class="nav-link dropdown-toggle" href="#" id="profileMenu" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle"></i> Profile
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+              <li><a class="dropdown-item" href="#">Login</a></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+              <li><a class="dropdown-item" href="#">Registrarse</a></li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR DINÁMICO (Django) -->
+  <div class="container">
+    {% block contenido %}
+    {% endblock %}
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="footer-custom mt-5">
+    <div class="container py-4">
+      <div class="row text-white">
+
+        <!-- Información de contacto -->
+        <div class="col-md-4 mb-3">
+          <h5>Contact</h5>
+          <ul class="list-unstyled">
+            <li>Email: contact@example.com</li>
+            <li>Phone: +1 234 567 890</li>
+            <li>Address: 123 Main St, City</li>
           </ul>
         </div>
 
-        <div>
-
+        <!-- Información legal -->
+        <div class="col-md-4 mb-3">
+          <h5>Legal</h5>
+          <ul class="list-unstyled">
+            <li>&copy; 2025 MySite</li>
+            <li>All rights reserved.</li>
+            <li>Terms & Conditions</li>
+          </ul>
         </div>
 
-    </div>
+        <!-- Información adicional -->
+        <div class="col-md-4 mb-3">
+          <h5>More Info</h5>
+          <ul class="list-unstyled">
+            <li>Blog</li>
+            <li>Careers</li>
+            <li>Support</li>
+          </ul>
+        </div>
 
-
-    <div class="container">
-
-        {% block contenido %}
-
-        {% endblock %}
-
-    </div>
-
-    <!--El Fotter-->
-    <div class="container-fluid" id="fotter">
-      <div>
-        <ul class="lista">
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-        </ul>
       </div>
-
-      <div>
-        <ul class="lista">
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-        </ul>
-      </div>
-
-      <div>
-        <ul class="lista">
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-          <li>a</li>
-        </ul>
-      </div>
-
     </div>
+  </footer>
 
+  <!-- Bootstrap JS + Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 
-    <!--este bloque es para los javascript especificos de pagina-->
-    {% block js %}
-
-    {% endblock %}
-    
+  {% block js %}
+  {% endblock %}
+  
 </body>
 </html>
 
