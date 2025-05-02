@@ -51,9 +51,7 @@
   .footer-custom {
     background-color: #000000;
     color: white;
-    position:absolute; 
-    bottom:0;
-    width: 100%;
+
   }
 
   /* Títulos en el footer con color ámbar */
@@ -72,3 +70,5 @@
     color: #ffc107;
     cursor: pointer;
   }
+
+  
