@@ -13,3 +13,9 @@ def productos(request):
 
 def servicios(request):
     return render(request, 'app/Servicios.html')
+
+def producto(request):
+    return render(request, 'app/Producto.html')
+
+def carrito(request):
+    return render(request, 'app/Carrito.html')

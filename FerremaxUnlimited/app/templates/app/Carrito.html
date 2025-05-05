@@ -1,0 +1,85 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+<!--este bloque es para los css especificos de pagina-->
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+{% endblock %}
+
+<!--este bloque es para los javascript especificos de pagina-->
+{% block js %}
+<script>
+    const unitPrices = {
+      qty1: 10,
+      qty2: 15
+    };
+  
+    function changeQty(id, delta) {
+      const input = document.getElementById(id);
+      let val = parseInt(input.value) || 1;
+      val += delta;
+      if (val < parseInt(input.min)) val = parseInt(input.min);
+      if (val > parseInt(input.max)) val = parseInt(input.max);
+      input.value = val;
+      updateTotal();
+    }
+  
+    function updateTotal() {
+      let total = 0;
+  
+      Object.keys(unitPrices).forEach(id => {
+        const qty = parseInt(document.getElementById(id).value) || 1;
+        const price = unitPrices[id];
+        const lineTotal = qty * price;
+        document.getElementById('total' + id.replace('qty', '')).textContent = `$${lineTotal.toFixed(2)}`;
+        total += lineTotal;
+      });
+  
+      document.getElementById('grandTotal').textContent = total.toFixed(2);
+    }
+  
+
+  </script>
+{% endblock %}
+
+
+
+{% block contenido %}
+
+<div class="container py-5">
+    <h2 class="mb-4">Tu Carrito</h2>
+  
+    <!-- Producto -->
+    <div class="row align-items-center cart-item shadow mb-5 rounded">
+      <div class="col-md-2">
+        <img src="{% static 'img/placeholder.png' %}" alt="Producto 1" class="img-fluid">
+      </div>
+      <div class="col-md-2">
+        <h5>Producto 1</h5>
+        <p class="mb-0 text-muted">Precio unitario: $10.00</p>
+        <!--text muted es un tipo de texto-->
+      </div>
+      <div class="col-md-2">
+        <!-- Selector de cantidad -->
+        <div class="input-group" style="max-width: 120px;">
+          <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty1', -1)">−</button>
+          <input type="number" class="form-control text-center" id="qty1" value="1" min="1" max="10" onchange="updateTotal()">
+          <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty1', 1)">+</button>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <p class="fw-bold mb-0" id="total1">$10.00</p>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-danger">Eliminar</button>
+      </div>
+      <div class="col-md-2 text-end">
+        <p><strong>Total: $<span id="grandTotal">25.00</span></strong></p>
+        <button class="btn btn-success">Finalizar Compra</button>
+      </div>
+    </div>
+</div>
+  
+
+
+{% endblock %}

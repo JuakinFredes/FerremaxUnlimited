@@ -1,0 +1,13 @@
+.cart-item {
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+  }
+
+  .cart-item img {
+    max-width: 150px;
+  }
+
+  .total-summary {
+    font-size: 1.2rem;
+  }
+
