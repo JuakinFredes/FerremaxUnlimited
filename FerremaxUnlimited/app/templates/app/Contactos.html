@@ -1,8 +1,8 @@
 {% extends 'app/base.html' %}
-
+{% load static %}
 <!--este bloque es para los css especificos de pagina-->
 {% block css %}
-
+<link rel="stylesheet" href="{% static 'css/contactos.css' %}">
 {% endblock %}
 
 <!--este bloque es para los javascript especificos de pagina-->
@@ -11,7 +11,50 @@
 {% endblock %}
 
 {% block contenido %}
-        
 
+  <div id="Prods">
+    <div class="parent">
+        <div class="card p-4" style="width:400px">
+            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
+            <div class="card-body">
+              <h4 class="card-title">Correo</h4>
+              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
+              <a href="#" class="btn btn-primary">See Profile</a>
+            </div>
+          </div>
+          <div class="card p-4" style="width:400px">
+            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
+            <div class="card-body">
+              <h4 class="card-title">Numero</h4>
+              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
+              <a href="#" class="btn btn-primary">See Profile</a>
+            </div>
+          </div>
+          <div class="card p-4" style="width:400px">
+            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
+            <div class="card-body">
+              <h4 class="card-title">Mensaje de texto</h4>
+              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
+              <a href="#" class="btn btn-primary">See Profile</a>
+            </div>
+          </div>
+          <div class="card p-4" style="width:400px">
+            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
+            <div class="card-body">
+              <h4 class="card-title">WhatsApp</h4>
+              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
+              <a href="#" class="btn btn-primary">See Profile</a>
+            </div>
+          </div>
+          <div class="card p-4" style="width:400px">
+            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
+            <div class="card-body">
+              <h4 class="card-title">Servicio al cliente</h4>
+              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
+              <a href="#" class="btn btn-primary">See Profile</a>
+            </div>
+          </div>
+    </div>
+  </div>
 
 {% endblock %}

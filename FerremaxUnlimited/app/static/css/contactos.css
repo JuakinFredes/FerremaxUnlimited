@@ -1,0 +1,22 @@
+.parent {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /*cuando los elementos bordan el contenedor, se alinean hacia abajo*/
+    margin: 20px 0; /* outer margin doesn't matter */
+  }
+
+.parent .card {
+    display: inline-block;
+  }
+
+.card{
+    margin-top: 1%;
+    margin-bottom: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+#Prods{
+    display: flex;
+    justify-content: center;
+  }
