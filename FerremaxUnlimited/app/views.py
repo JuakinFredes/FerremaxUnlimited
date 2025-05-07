@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Producto
+from .forms import ProductoForm
 
 # Create your views here.
 
@@ -27,3 +28,37 @@ def producto(request):
 
 def carrito(request):
     return render(request, 'app/Carrito.html')
+
+def vista_producto(request):
+    productos = Producto.objects.all()
+    data = {
+        'form': ProductoForm(),
+        'productos' : productos
+    }
+    if request.method == 'POST':
+        formulario = ProductoForm(data=request.POST, files=request.FILES)
+        if formulario.is_valid():
+            formulario.save()
+        else:
+            data['form'] = formulario
+    return render(request, "app/Producto/baseProducto.html",data)
+
+def modificar_Producto(request, id):
+
+    producto = get_object_or_404(Producto, id=id)
+    data = {
+        'form': ProductoForm(instance=producto)
+    }
+    formulario = ProductoForm(data=request.POST, files=request.FILES)
+    if request.method == 'POST':
+        formulario = ProductoForm(data=request.POST,instance=producto, files=request.FILES)
+        if formulario.is_valid():
+                formulario.save()
+                return redirect(to="vista_producto")
+        data['form'] = formulario
+    return render(request, "app/Producto/modificarProducto.html",data)
+
+def eliminar_Producto(request, id):
+    producto = get_object_or_404(Producto, id=id)
+    producto.delete()
+    return redirect(to="vista_producto")

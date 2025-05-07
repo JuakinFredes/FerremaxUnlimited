@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!--este bloque es para los css especificos de pagina-->
+{% block css %}
+
+{% endblock %}
+
+<!--este bloque es para los javascript especificos de pagina-->
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block contenido %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+    <div class="col-12 col-md-6 offset-md-3">
+    <h1>Agregar Producto</h1>
+        <div class="card">
+            <div class="card-body">
+    
+                <form action="" method="post">
+    
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <div class="d-flex justify-content-center">
+                        
+                        <input type="reset" class="btn btn-secondary" value="Cancelar">
+                        &nbsp;
+                        <input type="submit" class="btn btn-primary" value="Guardar">
+                    </div>
+                    
+    
+                </form>
+    
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}
