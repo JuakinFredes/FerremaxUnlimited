@@ -1,9 +1,17 @@
 from django.shortcuts import render
+from .models import Producto
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'app/Home.html')
+    productos = Producto.objects.all() #crea una lista donde trae todos los productos
+
+    #se crea un diccionario para la pagina, en este caso se llama data
+    data = { 
+        'productos' : productos
+    }
+
+    return render(request, 'app/Home.html', data) #El listado se manda con toda la info de la pagina
 
 def contactos(request):
     return render(request, 'app/Contactos.html')
