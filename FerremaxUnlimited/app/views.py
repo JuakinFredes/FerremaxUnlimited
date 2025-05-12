@@ -1,6 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Producto
-from .forms import ProductoForm
+from .forms import ProductoForm, CustomUserCreationForm
+from django.core.paginator import Paginator
+from django.http import Http404
+from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 
@@ -29,19 +33,29 @@ def producto(request):
 def carrito(request):
     return render(request, 'app/Carrito.html')
 
-def vista_producto(request):
+def vistaProducto(request):
     productos = Producto.objects.all()
+    page = request.GET.get('page', 1)
+
+    try:
+        paginator = Paginator(productos,7)
+        productos = paginator.page(page)
+    except:
+        raise Http404
+
     data = {
         'form': ProductoForm(),
-        'productos' : productos
+        'entity' : productos,
+        'paginator' : paginator
     }
     if request.method == 'POST':
         formulario = ProductoForm(data=request.POST, files=request.FILES)
         if formulario.is_valid():
             formulario.save()
+            return redirect(to="vistaProducto")
         else:
             data['form'] = formulario
-    return render(request, "app/Producto/baseProducto.html",data)
+    return render(request, "app/Producto/vistaProducto.html",data)
 
 def modificar_Producto(request, id):
 
@@ -62,3 +76,18 @@ def eliminar_Producto(request, id):
     producto = get_object_or_404(Producto, id=id)
     producto.delete()
     return redirect(to="vista_producto")
+
+def registro(request):
+    data={
+        'form':CustomUserCreationForm
+    }
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(data=request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            user = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
+            login(request, user)
+            return redirect(to='home')
+        data['form'] = formulario
+
+    return render(request, 'registration/registro.html',data)

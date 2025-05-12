@@ -33,7 +33,7 @@
                 <th>Opciones</th>
             </tr>
 
-            {% for p in productos %}
+            {% for p in entity %}
             <tr>
                 <td>{{ p.nombre | title}}</td>
                 <td>${{ p.precio | intcomma}}</td>
@@ -44,6 +44,10 @@
             {% endfor %}
 
         </table>
+
+        <div>
+            {% include 'app/paginator.html' %}
+        </div>
     </div>
 
 
@@ -53,7 +57,7 @@
         <div class="card">
             <div class="card-body">
     
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
     
                     {% csrf_token %}
                     {{ form | crispy }}
