@@ -22,7 +22,7 @@
 
 
 {% block contenido %}
-
+{% load humanize %}
     
 <div class="row content-block p-4 rounded shadow-sm" style="margin-top: 2%;">
     <!--Primera columna-->
@@ -30,20 +30,21 @@
     <div class="col-md-4 p-2">
         <!-- col-md-4: ocupa la un poco menos mitad del ancho en pantallas medianas en adelante -->
         <!-- p-2 corresponde al tipo de padding pod defecto que tendra el div-->
+
         <img src="{% static 'img/placeholder.png' %}" alt="Imagen" style="width: 400px;padding-right: 2%;">
     </div>
 
     <!--Segunda Columna-->
     <div class="col-md-8 p-2" style="margin-left: 2xp;">
         <!-- col-md-8: ocupa la un poco mas mitad del ancho en pantallas medianas en adelante -->
-         <h2>Producto</h2>
-         <h3>$10.000</h3>
+         <h2>Producto; {{ producto.nombre | title }}</h2>
+         <h3>${{ producto.precio | intcomma}}</h3>
          <div class="shadow p-3 mb-5 rounded">
          <!--shadow mb-5 corresponde al tipo de sombra-->
          <!--rounded es a el tipo de esquinas-->
-            <h4>Marca:</h4>
+            <h4>Marca: {{ producto.marca | title }}</h4>
            <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+            {{ producto.descripcion | capfirst}}{{ producto.id }}
          </p> 
          </div>
 
@@ -58,9 +59,13 @@
                 <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(1)">+</button>
         </div>
 
-         <div>
-            <button class="btn btn-primary mt-6" >Comprar</button>
-         </div>
+        {% if user.is_authenticated %}
+        <form action="{% url 'agregarCarro' producto.id %}" method="post">
+          {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+        </form>
+      {% endif %}
+
          
          
     </div>

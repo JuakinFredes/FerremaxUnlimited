@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.contrib.auth.models import User #se importa al usuario para el carrito
 
 # Create your models here.
 #py manage.py makemigrations para hacer las migraciones y crearlas como sql en migratios
-#py manage.py makemigrate finalmente las migra a la memoria
+#py manage.py migrate finalmente las migra a la memoria
 class Marcar(models.Model):
     nombre = models.CharField(max_length=50)
 
@@ -23,4 +23,12 @@ class Producto(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+class Carro(models.Model):
+    productos =models.ManyToManyField(Producto, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return self.usuario
     

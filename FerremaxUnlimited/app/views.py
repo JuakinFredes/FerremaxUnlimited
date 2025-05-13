@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Producto
+from .models import Producto, Carro
 from .forms import ProductoForm, CustomUserCreationForm
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -27,11 +27,22 @@ def productos(request):
 def servicios(request):
     return render(request, 'app/Servicios.html')
 
-def producto(request):
-    return render(request, 'app/Producto.html')
+def producto(request, id):
+    producto = get_object_or_404(Producto, id=id) # se obtiene una instancia del la entidad
+    data = { #se carga en la data y se referencia como producto para dsp llamarla en html (las comillas)
+        'producto': producto
+    }
+    return render(request, 'app/Producto.html',data)
 
 def carrito(request):
-    return render(request, 'app/Carrito.html')
+    carrito = Carro.objects.filter(usuario=request.user)
+    total = sum(p.productos.precio * p.cantidad for p in carrito)
+    
+    data = {
+        'carrito': carrito,
+        'total': total,
+    }
+    return render(request, 'app/Carrito.html',data)
 
 def vistaProducto(request):
     productos = Producto.objects.all()
@@ -91,3 +102,20 @@ def registro(request):
         data['form'] = formulario
 
     return render(request, 'registration/registro.html',data)
+
+def agregarCarro(request, id):
+    productos = get_object_or_404(Producto, id=id)
+
+    if Carro.objects.filter(productos=productos, usuario=request.user).exists(): #verifica si existe ya un producto igual que el se agrega
+        obj_carrito = Carro.objects.get(productos=productos, usuario=request.user)
+        obj_carrito.cantidad += 1
+        obj_carrito.save()
+    else:
+        obj_carrito = Carro.objects.get(productos=productos, usuario=request.user)
+        obj_carrito.save()
+    return redirect(to='app/Home.html')
+
+def eliminarCarro(request, id):
+    producto = get_object_or_404(Producto, id=id, usuario=request.user)
+    producto.delete()
+    return redirect(to='app/Carrito.html')

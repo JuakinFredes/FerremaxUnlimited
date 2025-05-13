@@ -80,13 +80,14 @@ function showSlides(n) {
   <div id="Prods">
     <div class="parent">
       {% for p in productos %} <!--listado que esta en la data, que es mandado en el views-->
+      
       <div class="child">
         {% if p.imagen %}
-        <img src="{{ p.imagen.url }}" alt="" class="img-fluid">
+        <a href="{% url 'producto' p.id %}"><img src="{{ p.imagen.url }}" alt="" class="img-fluid"></a>
         {% endif %}
-        <h4>{{ p.marca | capfirst}}</h4>
-        <h3>{{ p.nombre | title }}</h3>
-        <h5>${{ p.precio | intcomma }}</h5>
+        <a href="{% url 'producto' p.id %}"><h4>{{ p.marca | capfirst}}</h4></a>
+        <a href="{% url 'producto' p.id %}"><h3>{{ p.nombre | title }}</h3></a>
+        <a href="{% url 'producto' p.id %}"><h5>${{ p.precio | intcomma }}</h5></a>
       </div>
       {% endfor %}
     </div>
