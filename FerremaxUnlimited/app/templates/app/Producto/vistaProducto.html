@@ -29,7 +29,6 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Marca</th>
-                <th>Año</th>
                 <th>Opciones</th>
             </tr>
 
@@ -38,7 +37,6 @@
                 <td>{{ p.nombre | title}}</td>
                 <td>${{ p.precio | intcomma}}</td>
                 <td>{{ p.marca | title}}</td>
-                <td>{{ p.anno }}</td>
                 <td><a href="{% url 'modificarProducto' p.id %}" class="btn btn-primary">Modificar</a>&nbsp;<a href="{% url 'eliminar_Producto' p.id %}" class="btn btn-danger">Eliminar</a></td>
             </tr>
             {% endfor %}

@@ -18,14 +18,13 @@ class Producto(models.Model):
     precio = models.IntegerField()
     descripcion = models.TextField()
     marca = models.ForeignKey(Marcar, on_delete=models.PROTECT)
-    anno = models.DateField()
     imagen = models.ImageField(upload_to="productos", null=True)
     
     def __str__(self):
         return self.nombre
     
 class Carro(models.Model):
-    productos =models.ManyToManyField(Producto, on_delete=models.CASCADE)
+    productos =models.ForeignKey(Producto, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
 
