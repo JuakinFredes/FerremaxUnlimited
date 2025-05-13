@@ -114,9 +114,9 @@ def agregarCarro(request, id):
         obj_carrito = Carro(productos=productos, usuario=request.user, cantidad=1)
         obj_carrito.save()
 
-    return redirect(to='Home.html')
+    return redirect('home')
 
 def eliminarCarro(request, id):
-    producto = get_object_or_404(Producto, id=id, usuario=request.user)
+    producto = get_object_or_404(Carro, id=id, usuario=request.user)
     producto.delete()
-    return redirect(to='Carrito.html')
+    return redirect('carrito')

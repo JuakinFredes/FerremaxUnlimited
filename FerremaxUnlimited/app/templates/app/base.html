@@ -55,16 +55,17 @@
 
 
           <!-- Dropdown de carrito -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="buyMenu" role="button" data-bs-toggle="dropdown">
-              <i class="fas fa-shopping-cart"></i> Buy
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="buyMenu">
-              <li><a class="dropdown-item" href="{% url 'carrito' %}">Carrito</a></li>
-              <li><a class="dropdown-item" href="#">Historial</a></li>
-            </ul>
-          </li>
-
+          {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="buyMenu" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-shopping-cart"></i> Buy
+              </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="buyMenu">
+                  <li><a class="dropdown-item" href="{% url 'carrito' %}">Carrito</a></li>
+                  <li><a class="dropdown-item" href="#">Historial</a></li>
+                </ul>
+            </li>
+          {% endif %}
           <!-- Dropdown de perfil -->
           <li class="nav-item dropdown ms-3">
             <a class="nav-link dropdown-toggle" href="#" id="profileMenu" role="button" data-bs-toggle="dropdown">
