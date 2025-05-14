@@ -9,37 +9,48 @@
 <!--este bloque es para los javascript especificos de pagina-->
 {% block js %}
 <script>
-    const unitPrices = {
-      qty1: 10,
-      qty2: 15
-    };
-  
-    function changeQty(id, delta) {
-      const input = document.getElementById(id);
-      let val = parseInt(input.value) || 1;
-      val += delta;
-      if (val < parseInt(input.min)) val = parseInt(input.min);
-      if (val > parseInt(input.max)) val = parseInt(input.max);
-      input.value = val;
-      updateTotal();
-    }
-  
-    function updateTotal() {
-      let total = 0;
-  
-      Object.keys(unitPrices).forEach(id => {
-        const qty = parseInt(document.getElementById(id).value) || 1;
-        const price = unitPrices[id];
-        const lineTotal = qty * price;
-        document.getElementById('total' + id.replace('qty', '')).textContent = `$${lineTotal.toFixed(2)}`;
-        total += lineTotal;
-      });
-  
-      document.getElementById('grandTotal').textContent = total.toFixed(2);
-    }
-  
 
-  </script>
+
+    function changeQty(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value) || 1;
+        val += delta;
+        if (val < 1) val = 1;
+        input.value = val;
+        sendUpdate(id);
+    }
+
+    function sendUpdate(inputId) {
+        const input = document.getElementById(inputId);
+        const cantidad = parseInt(input.value);
+        const productoId = input.dataset.productoId;
+
+        fetch("{% url 'actualizar_cantidad_carro' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                producto_id: productoId,
+                cantidad: cantidad
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.subtotal !== undefined) {
+                const subtotalElem = document.getElementById('total' + inputId.replace('qty', ''));
+                subtotalElem.textContent = `$${data.subtotal.toFixed(2)}`;
+                document.getElementById('grandTotal').textContent = data.total.toFixed(2);
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(err => {
+            console.error("Error en actualización:", err);
+        });
+    }
+</script>
 
 {% endblock %}
 
@@ -64,9 +75,10 @@
                 <div class="input-group" style="max-width: 120px;">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', -1)">−</button>
                     <input type="number" class="form-control text-center"
-                           id="qty{{ forloop.counter }}"
-                           value="{{ item.cantidad }}" min="1" max="99"
-                           onchange="updateTotal()">
+                        id="qty{{ forloop.counter }}"
+                        data-producto-id="{{ item.productos.id }}"
+                        value="{{ item.cantidad }}" min="1" max="99"
+                        onchange="sendUpdate('qty{{ forloop.counter }}')">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', 1)">+</button>
                 </div>
             </div>

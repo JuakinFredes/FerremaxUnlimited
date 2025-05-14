@@ -4,7 +4,10 @@ from .forms import ProductoForm, CustomUserCreationForm
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.contrib.auth import authenticate, login
-
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
 # Create your views here.
 
@@ -44,6 +47,7 @@ def carrito(request):
     }
     return render(request, 'app/Carrito.html',data)
 
+@permission_required('app.view_producto')
 def vistaProducto(request):
     productos = Producto.objects.all()
     page = request.GET.get('page', 1)
@@ -68,6 +72,7 @@ def vistaProducto(request):
             data['form'] = formulario
     return render(request, "app/Producto/vistaProducto.html",data)
 
+@permission_required('app.change_producto')
 def modificar_Producto(request, id):
 
     producto = get_object_or_404(Producto, id=id)
@@ -83,6 +88,7 @@ def modificar_Producto(request, id):
         data['form'] = formulario
     return render(request, "app/Producto/modificarProducto.html",data)
 
+@permission_required('app.delete_producto')
 def eliminar_Producto(request, id):
     producto = get_object_or_404(Producto, id=id)
     producto.delete()
@@ -117,6 +123,32 @@ def agregarCarro(request, id):
     return redirect('home')
 
 def eliminarCarro(request, id):
-    producto = get_object_or_404(Carro, id=id, usuario=request.user)
+    producto = get_object_or_404(Carro, usuario=request.user)
     producto.delete()
     return redirect('carrito')
+
+
+@require_POST
+def actualizar_cantidad_carro(request):
+    try:
+        data = json.loads(request.body)
+        producto_id = data.get('producto_id')
+        cantidad = int(data.get('cantidad'))
+
+        if cantidad < 1:
+            return JsonResponse({'error': 'Cantidad no válida'}, status=400)
+
+        carro_item = Carro.objects.get(usuario=request.user, productos_id=producto_id)
+        carro_item.cantidad = cantidad
+        carro_item.save()
+
+        subtotal = carro_item.cantidad * carro_item.productos.precio
+        total_general = sum(p.productos.precio * p.cantidad for p in Carro.objects.filter(usuario=request.user))
+
+        return JsonResponse({
+            'subtotal': subtotal,
+            'total': total_general,
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
