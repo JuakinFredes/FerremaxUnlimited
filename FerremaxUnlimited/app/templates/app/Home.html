@@ -77,22 +77,26 @@ function showSlides(n) {
     <span class="dot" onclick="currentSlide(3)"></span>
   </div>
   {% load humanize %}
-  <div id="Prods">
-    <div class="parent">
-      {% for p in productos %} <!--listado que esta en la data, que es mandado en el views-->
-      
-      <div class="child">
-        {% if p.imagen %}
-        <a href="{% url 'producto' p.id %}"><img src="{{ p.imagen.url }}" alt="" class="img-fluid"></a>
-        {% endif %}
-        <a href="{% url 'producto' p.id %}"><h4>{{ p.marca | capfirst}}</h4></a>
-        <a href="{% url 'producto' p.id %}"><h3>{{ p.nombre | title }}</h3></a>
-        <a href="{% url 'producto' p.id %}"><h5>${{ p.precio | intcomma }}</h5></a>
+<div id="Prods">
+  <div class="parent" style="background-color: white;">
+    {% for p in productos %}
+    <div class="child card">
+      {% if p.imagen %}
+      <a href="{% url 'producto' p.id %}">
+        <img src="{{ p.imagen.url }}" alt="" class="fixed-img" style="width: 100%;height: 150px;object-fit: contain;background-color: #f8f8f8;">
+      </a>
+      {% endif %}
+      <div class="card-body" style="padding: 15px; text-align: center;">
+        <a href="{% url 'producto' p.id %}" style="text-decoration: none; color: inherit;"><h4>{{ p.marca | capfirst}}</h4></a>
+        <a href="{% url 'producto' p.id %}" style="text-decoration: none; color: inherit;"><h3>{{ p.nombre | title }}</h3></a>
+        <a href="{% url 'producto' p.id %}" style="text-decoration: none; color: inherit;"><h5>${{ p.precio | intcomma }}</h5></a>
       </div>
-      {% endfor %}
     </div>
-
+    {% endfor %}
   </div>
+</div>
+
+
 
   
 

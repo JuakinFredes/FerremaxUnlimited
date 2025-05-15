@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Producto, Carro
+from .models import Producto, Carro, Marcar
 from .forms import ProductoForm, CustomUserCreationForm
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -25,7 +25,13 @@ def contactos(request):
     return render(request, 'app/Contactos.html')
 
 def productos(request):
-    return render(request, 'app/Productos.html')
+    productos = Producto.objects.all()
+    marcas = Marcar.objects.all()
+    data = {
+        'productos' : productos,
+        'marcas' : marcas
+    }
+    return render(request, 'app/Productos.html',data)
 
 def servicios(request):
     return render(request, 'app/Servicios.html')

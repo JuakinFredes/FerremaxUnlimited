@@ -25,21 +25,36 @@
     <!--Primera columna-->
 
     <div class="col-md-10">
-        <h5 style="position: absolute;">Producto</h5>
-        <!-- col-md-8: ocupa la un poco mas mitad del ancho en pantallas medianas en adelante -->
-        <div id="Prods" style="margin-top: 2%;">
-            <div class="parent">
-              <div class="child"></div>
-              <div class="child"></div>
-              <div class="child"></div>
-              <div class="child"></div>
-            </div>
-          </div>
+          {% load humanize %}
+  <div id="Prods">
+    <div class="parent">
+      {% for p in productos %} <!--listado que esta en la data, que es mandado en el views-->
+      
+      <div class="child">
+        {% if p.imagen %}
+        <a href="{% url 'producto' p.id %}"><img src="{{ p.imagen.url }}" alt="" class="img-fluid"></a>
+        {% endif %}
+        <a href="{% url 'producto' p.id %}"><h4>{{ p.marca | capfirst}}</h4></a>
+        <a href="{% url 'producto' p.id %}"><h3>{{ p.nombre | title }}</h3></a>
+        <a href="{% url 'producto' p.id %}"><h5>${{ p.precio | intcomma }}</h5></a>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  
     </div>
     <!--Segunda Columna-->
     <div class="col-md-2" style="background-color: gray;">
         <!-- col-md-4: ocupa la un poco menos mitad del ancho en pantallas medianas en adelante -->
         <h5>Etiquetas</h5>
+        <hr>
+        {% for m in marcas %}
+          <div style="align-items: center;"><input type="checkbox" style="float: left;"><p >{{ m.nombre | title }}</p>
+
+          </div>
+        {% endfor%}
     </div>
 </div>    
 
