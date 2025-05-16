@@ -1,27 +1,31 @@
+#Prods {
+  display: flex;
+  justify-content: center;
+}
+
 .parent {
-    width: 1200px;
-    background-color: #333;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; /*cuando los elementos bordan el contenedor, se alinean hacia abajo*/
-    margin: 20px 0; /* outer margin doesn't matter */
-  }
-  
-  .parent .child {
-    display: inline-block;
-    background-color: #ccc;
-  
-  }
-  .child{
-    width: 300px;
-    height: 200px;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    margin-left: 1%;
-    margin-right: 1%;
-  }
-  
-  #Prods{
-    display: flex;
-    justify-content: center;
-  }
+  width: 1200px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+
+.parent .child.card {
+  margin: 1%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  display: flex;
+
+}
+
+
+.parent .child.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
