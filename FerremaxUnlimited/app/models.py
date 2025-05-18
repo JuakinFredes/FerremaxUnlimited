@@ -23,8 +23,9 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
     
-class Carro(models.Model):
-    productos =models.ForeignKey(Producto, on_delete=models.CASCADE)
+class Carro(models.Model): #django deja crear modelos que contienen, modelos dentro de si,
+                           #por lo que si llamas a un modelo, puede invocar a la lista de modelos contenidos en ellos
+    productos =models.ForeignKey(Producto, on_delete=models.CASCADE) #Se supone que  se tiene que hacer con TooManyManyToManyField, pero me dio fallo
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
 

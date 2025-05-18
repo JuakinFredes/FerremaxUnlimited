@@ -75,10 +75,10 @@
                 <div class="input-group" style="max-width: 120px;">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', -1)">−</button>
                     <input type="number" class="form-control text-center"
-                        id="qty{{ forloop.counter }}"
-                        data-producto-id="{{ item.productos.id }}"
-                        value="{{ item.cantidad }}" min="1" max="99"
-                        onchange="sendUpdate('qty{{ forloop.counter }}')">
+                           id="qty{{ forloop.counter }}"
+                           data-producto-id="{{ item.productos.id }}"
+                           value="{{ item.cantidad }}" min="1" max="99"
+                           onchange="sendUpdate('qty{{ forloop.counter }}')">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', 1)">+</button>
                 </div>
             </div>
@@ -94,17 +94,22 @@
         </div>
         {% endfor %}
 
-        <!-- Total final -->
         <div class="row justify-content-end mt-4">
             <div class="col-md-4 text-end">
                 <h4>Total: $<span id="grandTotal">{{ total }}</span></h4>
-                <button class="btn btn-success">Finalizar Compra</button>
+                <form method="post" action="{% url 'iniciar_transaccion' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="monto" value="{{ total }}">
+                    <input type="hidden" name="orden_compra" value="{{ orden_compra }}">
+                    <input type="hidden" name="id_sesion" value="{{ id_sesion }}">
+                    <button type="submit" class="btn btn-success">Finalizar Compra</button>
+                </form>
             </div>
         </div>
     {% else %}
         <p>No tienes productos en tu carrito.</p>
+        <br><br><br><br><br><br><br><br><br><br>
     {% endif %}
 </div>
-
 
 {% endblock %}
