@@ -212,25 +212,4 @@ def iniciar_transaccion(request):
     else:
         return redirect(to='carrito') # Si alguien intenta acceder directamente a esta URL por GET (hacking?)
 
-@csrf_exempt
-def retorno_transaccion(request):
 
-    token_ws = request.POST.get('token_ws')
-    orden_compra = request.POST.get('TBK_ORDEN_COMPRA')
-    id_sesion = request.POST.get('TBK_ID_SESION')
-
-    transaccion = transaction  
-
-    if token_ws:
-        
-        try:
-            response = transaccion.commit(token=token_ws)
-            # Aquí debes:
-            # 1. Verificar el estado de la transacción (response['status'])
-            # 2. Actualizar tu base de datos (marcar el pedido como pagado, etc.)
-            # 3. Asociar la información de la transacción con el pedido (response contiene datos como el ID de la transacción)
-            return render(request, 'app/carrito.html', {'response': response})
-        except Exception as e:
-            return render(request, 'app/error.html', {'error': f'Error al confirmar la transacción: {e}'})
-    else:
-        return render(request, 'app/error.html', {'error': 'Token WS no recibido.'})
