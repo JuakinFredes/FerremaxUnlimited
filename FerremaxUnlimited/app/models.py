@@ -32,3 +32,7 @@ class Carro(models.Model): #django deja crear modelos que contienen, modelos den
     def __str__(self):
         return self.cantidad
     
+class Pedido(models.Model):
+    productos =models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)

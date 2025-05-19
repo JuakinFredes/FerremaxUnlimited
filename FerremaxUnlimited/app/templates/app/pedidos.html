@@ -1,0 +1,87 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+<!--este bloque es para los css especificos de pagina-->
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+{% endblock %}
+
+<!--este bloque es para los javascript especificos de pagina-->
+{% block js %}
+<script>
+
+
+    function changeQty(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value) || 1;
+        val += delta;
+        if (val < 1) val = 1;
+        input.value = val;
+        sendUpdate(id);
+    }
+
+    function sendUpdate(inputId) {
+        const input = document.getElementById(inputId);
+        const cantidad = parseInt(input.value);
+        const productoId = input.dataset.productoId;
+
+        fetch("{% url 'actualizar_cantidad_carro' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                producto_id: productoId,
+                cantidad: cantidad
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.subtotal !== undefined) {
+                const subtotalElem = document.getElementById('total' + inputId.replace('qty', ''));
+                subtotalElem.textContent = `$${data.subtotal.toFixed(2)}`;
+                document.getElementById('grandTotal').textContent = data.total.toFixed(2);
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(err => {
+            console.error("Error en actualización:", err);
+        });
+    }
+</script>
+
+{% endblock %}
+
+
+
+{% block contenido %}
+
+<div class="container py-5">
+    <h2 class="mb-4">Tu Carrito</h2>
+
+    {% if pedidos %}
+        {% for item in pedidos %}
+        <div class="row align-items-center cart-item shadow mb-4 rounded">
+            <div class="col-md-2">
+                <img src="{{ item.productos.imagen.url }}" alt="{{ item.productos.nombre }}" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <h5>{{ item.productos.nombre }}</h5>
+                <p class="mb-0 text-muted">Precio unitario: ${{ item.productos.precio }}</p>
+            </div>
+                <p class="fw-bold mb-0" id="total{{ forloop.counter }}">${{ item.productos.precio|floatformat:2 }}</p>
+            </div>
+            <div class="col-md-2">
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No tienes pedidos en tu carrito.</p>
+        <br><br><br><br><br><br><br><br><br><br>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Producto, Carro, Marcar
+from .models import Producto, Carro, Marcar, Pedido
 from .forms import ProductoForm, CustomUserCreationForm
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -200,7 +200,18 @@ def iniciar_transaccion(request):
                 #el metodo entrega un token, vease en el if de abajo
             )
             carrito = Carro.objects.filter(usuario=request.user) #se obtiene el carrito para dsp borrar sus contenidos
-            carrito.delete()                                     #y se borran dsp que se confirme que fue exitosa el pago
+                                                                 #y se borran dsp que se confirme que fue exitosa el pago
+        
+            pedido = Pedido(
+                
+                productos = carrito.values("productos"),
+                cantidad = (carrito.values("cantidad")),
+                usuario = request.user,
+                total = request.POST.get('monto')
+                )
+            pedido.save()
+
+            carrito.delete()
             if response and 'token' in response:
                 #el token es un identificador unico, que generalmente se usa para la permitir acciones que tiene que ser unicas
                 return render(request, 'app/formulario_pago.html', {'token': response['token'], 'url': response['url']})
@@ -211,5 +222,14 @@ def iniciar_transaccion(request):
             return render(request, 'app/error.html', {'error': f'Ocurrió un error: {e}'})
     else:
         return redirect(to='carrito') # Si alguien intenta acceder directamente a esta URL por GET (hacking?)
+    
+def pedidos(request):
+    
+    pedidos = Pedido.objects.filter(usuario=request.user)
+
+    data = {
+        'pedidos' : pedidos
+    }
+    return render(request, 'app/pedidos.html',data)
 
 

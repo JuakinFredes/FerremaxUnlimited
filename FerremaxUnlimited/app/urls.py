@@ -2,7 +2,7 @@ from django.urls import path, include
 from .views import home,contactos,productos,servicios,producto,\
     carrito,modificar_Producto,vistaProducto,eliminar_Producto,\
     registro,agregarCarro,eliminarCarro,actualizar_cantidad_carro, \
-    iniciar_transaccion, retorno_transaccion
+    iniciar_transaccion,pedidos
 
 urlpatterns = [
     path('', home, name="home"),
@@ -19,7 +19,7 @@ urlpatterns = [
     path('eliminarCarro/<id>/', eliminarCarro, name="eliminarCarro"),
     path('actualizar-cantidad/', actualizar_cantidad_carro, name='actualizar_cantidad_carro'),
     path('webpay/iniciar/', iniciar_transaccion, name='iniciar_transaccion'),
-    path('webpay/retorno/', retorno_transaccion, name='retorno_transaccion'),
+    path('pedidos/',pedidos, name="pedidos")
 
 ]
 
