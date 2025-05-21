@@ -46,6 +46,9 @@
            <p>
             {{ producto.descripcion | capfirst}}{{ producto.id }}
          </p> 
+         <p>
+            {{ producto.stock }}
+         </p>
          </div>
 
          <div class="input-group mb-3" style="max-width: 160px;">
@@ -60,7 +63,9 @@
         </div>
 
         {% if user.is_authenticated %}
-        <form action="{% url 'agregarCarro' producto.id %}" method="post">
+          {% if producto.stock >= 0 %}
+            <form action="{% url 'agregarCarro' producto.id %}" method="post">
+          {% endif %}
           {% csrf_token %}
             <button type="submit" class="btn btn-primary">Agregar al carrito</button>
         </form>

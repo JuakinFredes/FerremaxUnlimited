@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Producto, Carro, Marcar, Pedido
+from .models import Producto, Carro, Marcar, Pedido,PedidoItem
 from .forms import ProductoForm, CustomUserCreationForm
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -58,9 +58,10 @@ def producto(request, id):
     }
     return render(request, 'app/Producto.html',data)
 
+@login_required
 def carrito(request):
     carrito = Carro.objects.filter(usuario=request.user)
-    total = sum(p.productos.precio * p.cantidad for p in carrito)
+    total = sum(p.producto.precio * p.cantidad for p in carrito)
     orden_compra = str(shortuuid.uuid()) #se crea una orden de compra para el metodo create() de transbank
     id_sesion = str(shortuuid.uuid()) #se crea una id de seccion  para el metodo create() de transbank
     data = {
@@ -134,17 +135,19 @@ def registro(request):
     return render(request, 'registration/registro.html',data)
 
 def agregarCarro(request, id):
-    productos = get_object_or_404(Producto, id=id)
+    producto = get_object_or_404(Producto, id=id)
 
-    if Carro.objects.filter(productos=productos, usuario=request.user).exists(): #verifica si existe ya un producto igual que el se agrega
-        obj_carrito = Carro.objects.get(productos=productos, usuario=request.user)
-        obj_carrito.cantidad += 1
-        obj_carrito.save()
-    else:
-        obj_carrito = Carro(productos=productos, usuario=request.user, cantidad=1)
-        obj_carrito.save()
+    carro_item, created = Carro.objects.get_or_create(#get_or_create, crea una instancia en el carrito si esque este no existe
+        producto=producto,
+        usuario=request.user,
+        defaults={'cantidad': 1} 
+    )
+    if not created:
+        carro_item.cantidad += 1
+        carro_item.save()
 
     return redirect('home')
+
 
 def eliminarCarro(request, id):
     producto = get_object_or_404(Carro, usuario=request.user)
@@ -177,11 +180,11 @@ def actualizar_cantidad_carro(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
     
-
+@login_required
 @csrf_exempt #donde esto es una api externa se crea una excepcion
 def iniciar_transaccion(request):
 
-    transaccion = transaction  #instansacion de la api y sus metodos
+    api = transaction  #instansacion de la api y sus metodos
 
     if request.method == 'POST': #si el metodo es POST, de la pagina se obtiene la data con los valores necesarios
         monto = request.POST.get('monto')#POST tmb es un metodo que usan las api's, es basicamente, postear
@@ -192,26 +195,49 @@ def iniciar_transaccion(request):
             return render(request, 'app/error.html', {'error': 'Faltan datos para la transacción.'})
 
         try:
-            response = transaccion.create(
+
+            carrito_items = Carro.objects.filter(usuario=request.user)
+
+            pedido_items_para_crear = []
+            total_calculado_carrito = 0
+            for item_carrito in carrito_items:
+                producto = item_carrito.producto
+                cantidad_solicitada = item_carrito.cantidad
+
+                producto.stock -= cantidad_solicitada
+                producto.save()
+
+                pedido_items_para_crear.append(
+                    {'producto': producto, 'cantidad': cantidad_solicitada, 'precio_unitario': producto.precio}
+                )
+                total_calculado_carrito += (producto.precio * cantidad_solicitada)
+
+            response = api.create(
                 buy_order=orden_compra,
                 session_id=id_sesion,
                 amount=float(monto),
-                return_url=request.build_absolute_uri('/carrito/'), #este metodo es si el pago es exitoso
-                #el metodo entrega un token, vease en el if de abajo
+                return_url=request.build_absolute_uri('/carrito/'),
             )
-            carrito = Carro.objects.filter(usuario=request.user) #se obtiene el carrito para dsp borrar sus contenidos
-                                                                 #y se borran dsp que se confirme que fue exitosa el pago
-        
-            pedido = Pedido(
-                
-                productos = carrito.values("productos"),
-                cantidad = (carrito.values("cantidad")),
-                usuario = request.user,
-                total = request.POST.get('monto')
-                )
-            pedido.save()
 
-            carrito.delete()
+            if not response or 'token' not in response:
+                raise Exception('Error al iniciar la transacción con Webpay.')
+
+            pedido = Pedido.objects.create(
+                usuario=request.user,
+                total_pedido=total_calculado_carrito,
+                estado='PENDIENTE'
+            )
+
+            for item_data in pedido_items_para_crear:
+                PedidoItem.objects.create(
+                    pedido=pedido,
+                    producto=item_data['producto'],
+                    cantidad=item_data['cantidad'],
+                    precio_unitario=item_data['precio_unitario']
+                )
+
+            carrito_items.delete()
+
             if response and 'token' in response:
                 #el token es un identificador unico, que generalmente se usa para la permitir acciones que tiene que ser unicas
                 return render(request, 'app/formulario_pago.html', {'token': response['token'], 'url': response['url']})
@@ -223,13 +249,98 @@ def iniciar_transaccion(request):
     else:
         return redirect(to='carrito') # Si alguien intenta acceder directamente a esta URL por GET (hacking?)
     
-def pedidos(request):
-    
-    pedidos = Pedido.objects.filter(usuario=request.user)
 
+
+
+@login_required
+def pedidos(request):
+    pedidos = Pedido.objects.filter(usuario=request.user).prefetch_related('items__producto')
     data = {
         'pedidos' : pedidos
     }
-    return render(request, 'app/pedidos.html',data)
+    return render(request, 'app/Pedidos/pedidos.html',data)
+
+
+
+
+@permission_required('app.change_pedido')
+def vendedor(request):
+    pedidos = Pedido.objects.filter(estado='PENDIENTE').prefetch_related('items__producto')
+    data = {
+        'pedidos' : pedidos
+    }
+    return render(request, 'app/Pedidos/vendedor.html', data)
+
+
+
+@permission_required('app.change_pedido')
+@permission_required('app.change_pedidoitem')
+def bodega(request):
+    pedidos = Pedido.objects.filter(estado='PROCESANDO').prefetch_related('items__producto')
+    data = {
+        'pedidos' : pedidos
+    }
+    return render(request, 'app/Pedidos/bodega.html', data)
+
+
+
+
+@permission_required('app.change_pedido')
+def pedidoProcesado(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+
+    if request.method == 'POST':
+        if pedido.estado == 'PENDIENTE':
+            pedido.estado = 'PROCESANDO'
+            pedido.save()
+        else:
+            pass
+    return redirect(to='vendedor')
+
+
+
+
+
+@permission_required('app.change_pedido')
+def pedidoEnviado(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+
+    if request.method == 'POST':
+        if pedido.estado == 'PROCESANDO':
+            pedido.estado = 'ENVIADO'
+            pedido.save()
+        else:
+            pass
+
+    return redirect(to='bodega')
+
+
+
+
+
+@permission_required('app.change_pedido')
+def pedidoCancelado1(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+
+    if request.method == 'POST':
+        if pedido.estado not in ['CANCELADO']:
+            pedido.estado = 'CANCELADO'
+            pedido.save()
+        else:
+            pass
+
+    return redirect(to='vendedor')
+
+def pedidoCancelado2(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+
+    if request.method == 'POST':
+        if pedido.estado not in ['CANCELADO']:
+            pedido.estado = 'CANCELADO'
+            pedido.save()
+        else:
+            pass
+
+    return redirect(to="bodega")
 
 

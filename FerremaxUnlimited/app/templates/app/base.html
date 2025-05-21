@@ -43,16 +43,26 @@
 
         <!-- Menú a la derecha (Carrito y Perfil) -->
          <!--Opciones de admin-->
-         {% if perms.app.view_producto %}
+        {% if perms.app.view_producto %}
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="buyMenu" role="button" data-bs-toggle="dropdown">
               <i class="fas fa-user-shield"></i> Admin
             </a>
+
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="buyMenu">
               <li><a class="dropdown-item" href="{% url 'vistaProducto' %}">Vista Producto</a></li>
-            </ul>
+
+
+            {% if perms.app.change_pedido %}
+                <li><a class="dropdown-item" href="{% url 'vendedor' %}">Vista Pedidos</a></li>
+            {% endif %}
+
+            {% if perms.app.change_pedidoitem %}
+                <li><a class="dropdown-item" href="{% url 'bodega' %}">Vista Bodega</a></li>
+            {% endif %}
           </li>
+          </ul>
           {% endif %}
 
           <!-- Dropdown de carrito -->

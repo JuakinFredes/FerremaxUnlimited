@@ -1,0 +1,56 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+
+    {% if pedidos %}
+        <div class="list-group">
+            {% for pedido in pedidos %}
+
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Pedido #{{ pedido.id }}</h5>
+                    <small>{{ pedido.fecha_creacion|date:"d M Y H:i" }}</small>
+                </div>
+                <p class="mb-1">Estado: <span class="badge bg-warning text-dark">{{ pedido.estado }}</span></p>
+                <p class="mb-1">Total: ${{ pedido.total_pedido|floatformat:0 }}</p>
+                {% if pedido.items.all %}
+                    <ul class="list-group list-group-flush">
+                        {% for item_pedido in pedido.items.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if item_pedido.producto.imagen %}
+                                    <img src="{{ item_pedido.producto.imagen.url }}" alt="{{ item_pedido.producto.nombre }}" class="img-thumbnail me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                {% endif %}
+                                {{ item_pedido.producto.nombre }}
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">{{ item_pedido.cantidad }} x ${{ item_pedido.precio_unitario|floatformat:0 }}</span>
+                        </li>
+                        {% endfor %}
+                {% endif %}
+
+            <form action="{% url 'pedidoProcesado' pedido.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary me-2">Marcar como Procesando</button>
+            </form>
+            <br>
+            <form action="{% url 'pedidoCancelado1' pedido.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+                <button type="submit" class="btn btn-primary me-2">Marcar como Cancelado</button>
+            </form>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No tienes pedidos pendientes en este momento.</p>
+    {% endif %}
+    <br><br><br><br><br><br><br><br><br><br>
+</div>
+{% endblock %}
