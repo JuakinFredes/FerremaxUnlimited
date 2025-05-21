@@ -14,3 +14,12 @@ contraseña: admin
 
 nombre: bodega, cajero, contador
 contra: dDupvfKUwz8JJ88
+
+targeta
+
+4051 8856 0044 6623
+mm/aa cualquiera
+cvv 123
+
+rut 11.111.111-1
+123
