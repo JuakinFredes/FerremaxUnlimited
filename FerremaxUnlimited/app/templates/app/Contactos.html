@@ -12,49 +12,66 @@
 
 {% block contenido %}
 
-  <div id="Prods">
-    <div class="parent">
-        <div class="card p-4" style="width:400px">
-            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
-            <div class="card-body">
-              <h4 class="card-title">Correo</h4>
-              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
-              <a href="#" class="btn btn-primary">See Profile</a>
-            </div>
-          </div>
-          <div class="card p-4" style="width:400px">
-            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
-            <div class="card-body">
-              <h4 class="card-title">Numero</h4>
-              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
-              <a href="#" class="btn btn-primary">See Profile</a>
-            </div>
-          </div>
-          <div class="card p-4" style="width:400px">
-            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
-            <div class="card-body">
-              <h4 class="card-title">Mensaje de texto</h4>
-              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
-              <a href="#" class="btn btn-primary">See Profile</a>
-            </div>
-          </div>
-          <div class="card p-4" style="width:400px">
-            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
-            <div class="card-body">
-              <h4 class="card-title">WhatsApp</h4>
-              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
-              <a href="#" class="btn btn-primary">See Profile</a>
-            </div>
-          </div>
-          <div class="card p-4" style="width:400px">
-            <img class="card-img-top" src="{% static 'img/placeholder.png' %}" alt="Card image" style="width:100%">
-            <div class="card-body">
-              <h4 class="card-title">Servicio al cliente</h4>
-              <p class="card-text">Some example text some example text. John Doe is an architect and engineer</p>
-              <a href="#" class="btn btn-primary">See Profile</a>
-            </div>
-          </div>
+{% if messages %}
+  <div class="container mt-3"> 
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="container my-5">
+  <h1 class="text-center fw-bold mb-4">Contáctanos</h1>
+  <p class="text-center text-muted mb-5">
+    Si tienes dudas, necesitas asesoría o quieres cotizar productos, ¡no dudes en escribirnos! Nuestro equipo te responderá a la brevedad.
+  </p>
+
+  <div class="row g-5">
+    <!-- Formulario -->
+    <div class="col-md-7">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="correo" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control" id="correo" name="correo" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="mensaje" class="form-label">Mensaje</label>
+          <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+      </form>
+    </div>
+
+    <div class="col-md-5">
+      <div class="bg-light p-4 rounded shadow-sm h-100">
+        <h5 class="fw-bold mb-3">Información de contacto</h5>
+        <p><i class="bi bi-geo-alt-fill me-2 text-danger"></i> Ñuble 1034, Oficina 203, Santiago</p>
+        <p><i class="bi bi-telephone-fill me-2 text-primary"></i> +56 9 6423 8493</p>
+        <p><i class="bi bi-envelope-fill me-2 text-success"></i> contacto@ferremax.cl</p>
+
+        <hr>
+
+        <a href="https://wa.me/56964238493" target="_blank" class="btn btn-success w-100">
+          <i class="bi bi-whatsapp me-1"></i> Escríbenos por WhatsApp
+        </a>
+      </div>
     </div>
   </div>
+
+  
+  <div class="mt-5">
+  </div>
+</div>
 
 {% endblock %}

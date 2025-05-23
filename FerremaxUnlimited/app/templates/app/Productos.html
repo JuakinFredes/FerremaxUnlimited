@@ -1,46 +1,66 @@
 {% extends 'app/base.html' %}
 {% load static %}
-<!--este bloque es para los css especificos de pagina-->
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/productos.css' %}">
 {% endblock %}
 
-<!--este bloque es para los javascript especificos de pagina-->
-{% block js %}
-
-{% endblock %}
-
 {% block contenido %}
-<div class="container" style="margin-top: 2%;">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="search-container">
-          <input type="text" class="form-control search-input" placeholder="Buscar Producto">
+<div class="container mt-5">
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-lg-6">
+      <div class="input-group shadow-sm">
+        <input type="text" class="form-control" placeholder="🔍 Buscar productos...">
+        <button class="btn btn-outline-secondary" type="button">Buscar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-9">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        {% load humanize %}
+        {% for p in productos %}
+        <div class="col">
+          <div class="card h-100 shadow-sm border-1">
+            {% if p.imagen %}
+            <a href="{% url 'producto' p.id %}">
+              <img src="{{ p.imagen.url }}" class="card-img-top" style="height: 200px; object-fit: contain; background: #f8f8f8;" alt="{{ p.nombre }}">
+            </a>
+            {% endif %}
+            <div class="card-body text-center">
+              <a href="{% url 'producto' p.id %}" class="text-decoration-none text-dark">
+                <h6 class="fw-bold mb-1">{{ p.marca|capfirst }}</h6>
+                <p class="mb-1">{{ p.nombre|title }}</p>
+                <h5 class="text-danger">${{ p.precio|intcomma }}</h5>
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title text-center">Filtrar por Marca</h5>
+          <hr>
+          <form>
+            {% for m in marcas %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="{{ m.nombre }}">
+              <label class="form-check-label">
+                {{ m.nombre|title }}
+              </label>
+            </div>
+            {% endfor %}
+          </form>
         </div>
       </div>
     </div>
-</div>     
 
-<div class="row content-block p-4 rounded shadow-sm" style="margin-top: 2%;">
-    <!--Primera columna-->
-
-    <div class="col-md-10">
-        <h5 style="position: absolute;">Producto</h5>
-        <!-- col-md-8: ocupa la un poco mas mitad del ancho en pantallas medianas en adelante -->
-        <div id="Prods" style="margin-top: 2%;">
-            <div class="parent">
-              <div class="child"></div>
-              <div class="child"></div>
-              <div class="child"></div>
-              <div class="child"></div>
-            </div>
-          </div>
-    </div>
-    <!--Segunda Columna-->
-    <div class="col-md-2" style="background-color: gray;">
-        <!-- col-md-4: ocupa la un poco menos mitad del ancho en pantallas medianas en adelante -->
-        <h5>Etiquetas</h5>
-    </div>
-</div>    
-
+  </div>
+</div>
 {% endblock %}

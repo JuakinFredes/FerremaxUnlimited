@@ -1,0 +1,98 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
+
+{% block contenido %}
+        <div class="container py-5">
+        <h2 class="fw-bold text-center mb-4">📋 Pedidos por Procesar</h2>
+
+        {% if pedidos %}
+            <div class="row row-cols-1 g-4">
+            {% for pedido in pedidos %}
+            <div class="col">
+                <div class="card shadow-sm border-1">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">Pedido #{{ pedido.id }}</h5>
+                    <small class="text-muted">{{ pedido.fecha_creacion|date:"d M Y H:i" }}</small>
+                    </div>
+
+
+                    <p class="mb-2">Estado: 
+                    {% if pedido.estado == "Pendiente" %}
+                        <span class="badge bg-warning text-dark">{{ pedido.estado }}</span>
+                    {% elif pedido.estado == "Cancelado" %}
+                        <span class="badge bg-danger">{{ pedido.estado }}</span>
+                    {% elif pedido.estado == "Procesando" %}
+                        <span class="badge bg-info text-dark">{{ pedido.estado }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ pedido.estado }}</span>
+                    {% endif %}
+                    </p>
+
+
+                    <p class="fw-bold text-primary">Total: ${{ pedido.total_pedido|floatformat:0 }}</p>
+
+                    {% if pedido.items.all %}
+                    <ul class="list-group list-group-flush mb-3">
+                    {% for item_pedido in pedido.items.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                        {% if item_pedido.producto.imagen %}
+                        <img src="{{ item_pedido.producto.imagen.url }}" alt="{{ item_pedido.producto.nombre }}" class="img-thumbnail me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                        {% endif %}
+                        <span>{{ item_pedido.producto.nombre }}</span>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill">
+                        {{ item_pedido.cantidad }} x ${{ item_pedido.precio_unitario|floatformat:0 }}
+                        </span>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                    <form action="{% url 'pedidoProcesado' pedido.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-info btn-sm px-3">Procesar Pedido</button>
+                    </form>
+
+                    <form action="{% url 'pedidoCancelado1' pedido.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm px-3">Cancelar Pedido</button>
+                    </form>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+            <h5 class="text-muted">No tienes pedidos pendientes en este momento.</h5>
+            </div>
+        {% endif %}
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+
+{% endblock %}

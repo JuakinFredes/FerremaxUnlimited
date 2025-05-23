@@ -15,28 +15,27 @@
 {% block contenido %}
 {% load crispy_forms_tags %}
 {% load humanize %}
-    <div class="col-12 col-md-6 offset-md-3">
-    <h1>Agregar Producto</h1>
-        <div class="card">
+    <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+        <h2 class="text-center fw-bold mb-4">🛠️ Modificar Producto</h2>
+
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-    
-                <form action="" method="post">
-    
-                    {% csrf_token %}
-                    {{ form | crispy }}
-                    <div class="d-flex justify-content-center">
-                        
-                        <input type="reset" class="btn btn-secondary" value="Cancelar">
-                        &nbsp;
-                        <input type="submit" class="btn btn-primary" value="Guardar">
-                    </div>
-                    
-    
-                </form>
-    
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex justify-content-between mt-4">
+                <input type="reset" class="btn btn-outline-secondary px-4" value="Cancelar">
+                <input type="submit" class="btn btn-success px-4" value="Guardar">
+                </div>
+            </form>
             </div>
         </div>
-</div>
+        </div>
+    </div>
+    </div>
 
 
 {% endblock %}

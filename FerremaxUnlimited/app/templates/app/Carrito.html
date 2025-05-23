@@ -1,29 +1,25 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
-<!--este bloque es para los css especificos de pagina-->
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
 {% endblock %}
 
-<!--este bloque es para los javascript especificos de pagina-->
 {% block js %}
 <script>
-
-
-    function changeQty(id, delta) {
-        const input = document.getElementById(id);
+    function changeQty(carroItemId, delta) {
+        const input = document.getElementById('qty' + carroItemId);
         let val = parseInt(input.value) || 1;
         val += delta;
-        if (val < 1) val = 1;
+        if (val < 0) val = 0; // Permitir 0 para eliminar el item
         input.value = val;
-        sendUpdate(id);
+        sendUpdate(carroItemId);
     }
 
-    function sendUpdate(inputId) {
-        const input = document.getElementById(inputId);
+    function sendUpdate(carroItemId) {
+        const input = document.getElementById('qty' + carroItemId);
         const cantidad = parseInt(input.value);
-        const productoId = input.dataset.productoId;
+        const productoId = input.dataset.productoId; // Todavía necesitamos el productoId para la búsqueda en la vista
 
         fetch("{% url 'actualizar_cantidad_carro' %}", {
             method: "POST",
@@ -32,79 +28,117 @@
                 "X-CSRFToken": "{{ csrf_token }}"
             },
             body: JSON.stringify({
-                producto_id: productoId,
+                producto_id: productoId, // Enviamos el producto_id
                 cantidad: cantidad
             })
         })
         .then(res => res.json())
         .then(data => {
-            if (data.subtotal !== undefined) {
-                const subtotalElem = document.getElementById('total' + inputId.replace('qty', ''));
-                subtotalElem.textContent = `$${data.subtotal.toFixed(2)}`;
+            if (data.success) {
+                if (cantidad === 0) {
+                    // Si el item fue eliminado (cantidad 0), recargar la página o eliminar el elemento del DOM
+                    location.reload(); // Recargar para simplificar, o podrías usar JS para remover el div del item
+                } else {
+                    const subtotalElem = document.getElementById('subtotal_item_' + carroItemId);
+                    subtotalElem.textContent = `$${data.subtotal.toFixed(2)}`;
+                }
                 document.getElementById('grandTotal').textContent = data.total.toFixed(2);
             } else {
                 alert("Error: " + data.error);
+                // Si hay un error (ej. stock insuficiente), puedes revertir la cantidad en el input
+                // O recargar para mostrar el estado actual
+                location.reload();
             }
         })
         .catch(err => {
             console.error("Error en actualización:", err);
+            alert("Ocurrió un error inesperado al actualizar la cantidad.");
+            location.reload(); // Recargar en caso de error de red
         });
     }
 </script>
 
 {% endblock %}
 
-
-
 {% block contenido %}
 
 <div class="container py-5">
-    <h2 class="mb-4">Tu Carrito</h2>
+  <h2 class="mb-4 text-center fw-bold">🛒 Tu Carrito de Compras</h2>
 
-    {% if carrito %}
-        {% for item in carrito %}
-        <div class="row align-items-center cart-item shadow mb-4 rounded">
-            <div class="col-md-2">
-                <img src="{{ item.productos.imagen.url }}" alt="{{ item.productos.nombre }}" class="img-fluid">
-            </div>
-            <div class="col-md-2">
-                <h5>{{ item.productos.nombre }}</h5>
-                <p class="mb-0 text-muted">Precio unitario: ${{ item.productos.precio }}</p>
-            </div>
-            <div class="col-md-2">
-                <div class="input-group" style="max-width: 120px;">
-                    <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', -1)">−</button>
-                    <input type="number" class="form-control text-center"
-                        id="qty{{ forloop.counter }}"
-                        data-producto-id="{{ item.productos.id }}"
-                        value="{{ item.cantidad }}" min="1" max="99"
-                        onchange="sendUpdate('qty{{ forloop.counter }}')">
-                    <button class="btn btn-outline-secondary" type="button" onclick="changeQty('qty{{ forloop.counter }}', 1)">+</button>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <p class="fw-bold mb-0" id="total{{ forloop.counter }}">${{ item.productos.precio|floatformat:2 }}</p>
-            </div>
-            <div class="col-md-2">
-                <form action="{% url 'eliminarCarro' item.productos.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">Eliminar</button>
-                </form>
-            </div>
-        </div>
-        {% endfor %}
+  {% if carrito %}
+    {% for item in carrito %}
+    <div class="row align-items-center shadow-sm p-3 mb-4 bg-white rounded-4 border border-light-subtle">
+      <div class="col-md-2 text-center">
+        <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="img-fluid rounded">
+      </div>
 
-        <!-- Total final -->
-        <div class="row justify-content-end mt-4">
-            <div class="col-md-4 text-end">
-                <h4>Total: $<span id="grandTotal">{{ total }}</span></h4>
-                <button class="btn btn-success">Finalizar Compra</button>
-            </div>
+      <div class="col-md-4">
+        <h5 class="mb-1 fw-semibold">{{ item.producto.nombre }}</h5>
+        <p class="text-muted mb-1">{{ item.producto.marca }}</p>
+        <p class="text-danger mb-0">Precio unitario: ${{ item.producto.precio }}</p>
+      </div>
+
+      <div class="col-md-3">
+        <div class="input-group input-group-sm">
+          <button class="btn btn-outline-dark rounded-start" type="button" onclick="changeQty('{{ item.id }}', -1)">−</button>
+          <input type="number"
+                 class="form-control text-center"
+                 id="qty{{ item.id }}"
+                 data-producto-id="{{ item.producto.id }}"
+                 value="{{ item.cantidad }}"
+                 min="0"
+                 max="{{ item.producto.stock }}"
+                 onchange="sendUpdate('{{ item.id }}')">
+          <button class="btn btn-outline-dark rounded-end" type="button" onclick="changeQty('{{ item.id }}', 1)">+</button>
         </div>
-    {% else %}
-        <p>No tienes productos en tu carrito.</p>
-    {% endif %}
+      </div>
+
+      <div class="col-md-2 text-center">
+        <p class="fw-bold text-success mb-0" id="subtotal_item_{{ item.id }}">
+          ${{ item.subtotal|floatformat }}
+        </p>
+      </div>
+
+      <div class="col-md-1 text-end">
+        <form action="{% url 'eliminarCarro' item.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+
+    <div class="row justify-content-end mt-4">
+      <div class="col-md-5 text-end">
+        <h4 class="fw-bold">Total: $<span id="grandTotal">{{ total|floatformat }}</span></h4>
+        <form method="post" action="{% url 'iniciar_transaccion' %}">
+          {% csrf_token %}
+          <input type="hidden" name="monto" value="{{ total|floatformat }}">
+          <input type="hidden" name="orden_compra" value="{{ orden_compra }}">
+          <input type="hidden" name="id_sesion" value="{{ id_sesion }}">
+          <button type="submit" class="btn btn-success btn-lg rounded-pill mt-2 px-5 shadow">Finalizar Compra</button>
+        </form>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="text-center py-5">
+      <h4 class="text-muted">No tienes productos en tu carrito.</h4>
+      <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">Explorar productos</a>
+    </div>
+  {% endif %}
 </div>
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
 {% endblock %}

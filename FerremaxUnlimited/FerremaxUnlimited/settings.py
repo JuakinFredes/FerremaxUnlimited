@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+# Configuración de Transbank Webpay
+TRANSBANK_WEBPAY_ENVIRONMENT = os.environ.get('TRANSBANK_WEBPAY_ENVIRONMENT', 'test')  # 'test' o 'live'
+TRANSBANK_WEBPAY_CC = os.environ.get('597055555532')  # Código de Comercio
+TRANSBANK_WEBPAY_API_KEY = os.environ.get('579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C')  # Llave Privada API
+
+# URL de retorno después de una transacción exitosa
+TRANSBANK_WEBPAY_RETURN_URL = 'http://127.0.0.1:8000/webpay/retorno/'  # Ajusta con tu URL
+# URL de retorno después de una transacción fallida o anulada
+TRANSBANK_WEBPAY_FINAL_URL = 'http://127.0.0.1:8000/webpay/final/'  # Ajusta con tu URL
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

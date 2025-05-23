@@ -12,76 +12,76 @@
 
 {% block contenido %}
         
-<div class="container py-5">
-  <!-- py-5: padding arriba y abajo de tamaño 5 -->
+<div class="container my-5">
+  <h1 class="text-center fw-bold mb-4">Nuestros Servicios</h1>
+  <p class="text-center text-muted mb-5">
+    En <strong>Ferremax</strong> no solo ofrecemos productos de ferretería de alta calidad, sino que también brindamos una gama de servicios pensados para entregar una experiencia completa, rápida y confiable a nuestros clientes. Nos adaptamos a las necesidades tanto de usuarios particulares como de pequeñas y medianas empresas.
+  </p>
 
-  <!-- Bloque 1 (Imagen izquierda) con fondo blanco -->
-  <div class="row content-block p-4 rounded shadow-sm">
-    <!-- row: fila del sistema de grid -->
-    <!-- p-4: padding interno -->
-    <!-- rounded: bordes redondeados -->
-    <!-- shadow-sm: sombra ligera -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
 
-    <!-- Columna 1: imagen -->
-    <div class="col-md-6">
-      <!-- col-md-6: ocupa la mitad del ancho en pantallas medianas en adelante -->
-      <img src="{% static 'img/placeholder.png' %}" alt="Imagen 1">
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">🛒 Venta Online</h5>
+          <p class="card-text">Explora nuestro catálogo y compra desde la comodidad de tu hogar. Nuestra tienda virtual está disponible 24/7, con múltiples métodos de pago seguros.</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Columna 2: texto + botón -->
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-      <!-- d-flex: usa flexbox -->
-      <!-- flex-column: elementos en columna -->
-      <!-- justify-content-center: centra verticalmente en la columna -->
-      <p class="content-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-      </p>
-      <button class="btn btn-primary mt-3 align-self-start">
-        <!-- btn: botón base -->
-        <!-- btn-primary: color azul -->
-        <!-- mt-3: margen superior -->
-        <!-- align-self-start: alinea a la izquierda dentro del flex -->
-        Saber más
-      </button>
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">🚚 Despacho Express</h5>
+          <p class="card-text">Realizamos envíos rápidos en la Región Metropolitana y zonas seleccionadas del país. Las compras realizadas antes de las 14:00 hrs se despachan el mismo día.</p>
+        </div>
+      </div>
     </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">💳 Webpay y Facturación</h5>
+          <p class="card-text">Contamos con integración a Webpay Plus para una experiencia de pago segura. Emitimos boleta o factura automáticamente para cada compra.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">🛠️ Asesoría Técnica</h5>
+          <p class="card-text">¿No sabes qué herramienta elegir? Nuestro equipo te orienta en base al tipo de proyecto, materiales y presupuesto. Disponible vía WhatsApp o teléfono.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">🏬 Retiro en Tienda</h5>
+          <p class="card-text">Compra online y retira directamente en nuestra sucursal sin costo adicional. Ahorra tiempo y evita filas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm border-1 text-center">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">📞 Atención Personalizada</h5>
+          <p class="card-text">Atención directa por nuestro equipo de ventas y postventa. Estamos para ayudarte antes, durante y después de tu compra.</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-
-  <div class="row content-block p-4 flex-md-row-reverse rounded shadow-sm" style="background-color: yellow;">
-    <!-- flex-md-row-reverse: invierte el orden de columnas en pantallas md+ -->
-    <!-- bg-warning: fondo amarillo (Bootstrap) -->
-
-    <div class="col-md-6">
-      <img src="{% static 'img/placeholder.png' %}" alt="Imagen 2">
-    </div>
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-      <p class="content-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-      </p>
-      <button class="btn btn-secondary mt-3 align-self-start">
-        Saber más
-      </button>
-    </div>
+  <div class="text-center mt-5">
+    <a href="{% url 'contactos' %}" class="btn btn-outline-primary rounded-pill px-4 py-2">Contáctanos para más información</a>
   </div>
-
-  <!-- Bloque 3 (Imagen izquierda) con fondo naranjo -->
-  <div class="row content-block p-4 rounded shadow-sm" style="background-color: orange;">
-
-
-    <div class="col-md-6">
-      <img src="{% static 'img/placeholder.png' %}" alt="Imagen 3">
-    </div>
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-      <p class="content-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-      </p>
-      <button class="btn btn-success mt-3 align-self-start">
-        Saber más
-      </button>
-    </div>
-  </div>
-
 </div>
+
+
 
 
 {% endblock %}

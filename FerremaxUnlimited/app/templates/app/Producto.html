@@ -3,7 +3,7 @@
 
 <!--este bloque es para los css especificos de pagina-->
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/producto.css' %}">
+
 {% endblock %}
 
 <!--este bloque es para los javascript especificos de pagina-->
@@ -24,51 +24,46 @@
 {% block contenido %}
 {% load humanize %}
     
-<div class="row content-block p-4 rounded shadow-sm" style="margin-top: 2%;">
-    <!--Primera columna-->
+  <div class="container py-5">
+    <div class="row align-items-start shadow-sm rounded-4 p-4 bg-white">
 
-    <div class="col-md-4 p-2">
-        <!-- col-md-4: ocupa la un poco menos mitad del ancho en pantallas medianas en adelante -->
-        <!-- p-2 corresponde al tipo de padding pod defecto que tendra el div-->
 
-        <img src="{% static 'img/placeholder.png' %}" alt="Imagen" style="width: 400px;padding-right: 2%;">
-    </div>
+      <div class="col-md-5 mb-4 mb-md-0">
+        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid rounded border" style="object-fit: contain; width: 100%; max-height: 400px;">
+      </div>
 
-    <!--Segunda Columna-->
-    <div class="col-md-8 p-2" style="margin-left: 2xp;">
-        <!-- col-md-8: ocupa la un poco mas mitad del ancho en pantallas medianas en adelante -->
-         <h2>Producto; {{ producto.nombre | title }}</h2>
-         <h3>${{ producto.precio | intcomma}}</h3>
-         <div class="shadow p-3 mb-5 rounded">
-         <!--shadow mb-5 corresponde al tipo de sombra-->
-         <!--rounded es a el tipo de esquinas-->
-            <h4>Marca: {{ producto.marca | title }}</h4>
-           <p>
-            {{ producto.descripcion | capfirst}}{{ producto.id }}
-         </p> 
-         </div>
+      <div class="col-md-7">
+        <h2 class="fw-bold mb-3">{{ producto.nombre|title }}</h2>
+        <h4 class="text-danger mb-4 fw-semibold">${{ producto.precio|intcomma }}</h4>
 
-         <div class="input-group mb-3" style="max-width: 160px;">
-                <!-- Botón - -->
-                <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(-1)">−</button>
-              
-                <!-- Campo numérico -->
-                <input type="number" class="form-control text-center" id="quantityInput" value="1" min="1" max="99">
-              
-                <!-- Botón + -->
-                <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(1)">+</button>
+        <div class="bg-light p-3 rounded shadow-sm mb-4">
+          <p class="mb-2"><strong>Marca:</strong> {{ producto.marca|title }}</p>
+          <p class="mb-2"><strong>Descripción:</strong> {{ producto.descripcion|capfirst }}</p>
+          <p class="mb-0"><strong>Stock disponible:</strong> {{ producto.stock }}</p>
+        </div>
+
+        <div class="input-group mb-3" style="max-width: 160px;">
+          <button class="btn btn-outline-dark" type="button" onclick="changeQuantity(-1)">−</button>
+          <input type="number" class="form-control text-center" id="quantityInput" value="1" min="1" max="99">
+          <button class="btn btn-outline-dark" type="button" onclick="changeQuantity(1)">+</button>
         </div>
 
         {% if user.is_authenticated %}
-        <form action="{% url 'agregarCarro' producto.id %}" method="post">
-          {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Agregar al carrito</button>
-        </form>
+          {% if producto.stock > 0 %}
+            <form action="{% url 'agregarCarro' producto.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm">
+                🛒 Agregar al carrito
+              </button>
+            </form>
+          {% else %}
+            <p class="text-danger fw-semibold">Producto sin stock disponible.</p>
+          {% endif %}
+        {% else %}
+          <p class="text-muted">Inicia sesión para agregar al carrito.</p>
         {% endif %}
-
-         
-         
+      </div>
     </div>
-</div>    
+  </div>
 
 {% endblock %}
