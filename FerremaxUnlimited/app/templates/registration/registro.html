@@ -14,14 +14,29 @@
     {% load crispy_forms_tags %}
     <div class="container-fluid">
         <div class="row">
-            <div class="d-flex justify-content-center">
+            <div class="col-12 col-md-6 offset-md-3">
+                
                 <div class="card">
                     <div class="card-body">
                         <h1>Registrarse a Ferremax Unlimited</h1>
                         <hr>
                         <form action="" method="post">
                             {% csrf_token %}
-                            {{ form | crispy }}
+                             <div class="form-group">    
+                            <h4>Nombre</h4>
+                            <div >{{form.username}}</div>
+                            </div>
+                            <br>
+                            <hr>
+                            <div class="form-group">
+                            <h4>Contraseña</h4>
+                            <div>{{form.password1}}</div>
+                            </div>
+                            <br>
+                            <div>
+                            <h4>Repita su Contraseña</h4>
+                            <div>{{form.password2}}</div>
+                            </div>
                             <hr>
                             <input type="submit" class="btn btn-primary" value="Registrarse">
                             <hr>

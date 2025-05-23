@@ -56,7 +56,7 @@ class Pedido(models.Model):
 # Este modelo servirá para almacenar los productos específicos de cada pedido
 class PedidoItem(models.Model):
     pedido = models.ForeignKey(Pedido, related_name='items', on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.IntegerField() # Para guardar el precio del producto en el momento de la compra
 

@@ -109,7 +109,7 @@ def modificar_Producto(request, id):
         formulario = ProductoForm(data=request.POST,instance=producto, files=request.FILES)
         if formulario.is_valid():
                 formulario.save()
-                return redirect(to="vista_producto")
+                return redirect(to="vistaProducto")
         data['form'] = formulario
     return render(request, "app/Producto/modificarProducto.html",data)
 
@@ -117,7 +117,7 @@ def modificar_Producto(request, id):
 def eliminar_Producto(request, id):
     producto = get_object_or_404(Producto, id=id)
     producto.delete()
-    return redirect(to="vista_producto")
+    return redirect(to="vistaProducto")
 
 def registro(request):
     data={
